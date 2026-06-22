@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AndesAccesible - Prototipo de Turismo Inclusivo</title>
+    <style>
+        /* --- VARIABLES DE DISEÑO (Base y Accesible) --- */
+        :root {
+            --bg-principal: #f4f7f6;
+            --bg-tarjeta: #ffffff;
+            --texto-color: #2d3748;
+            --primario: #0d9488;
+            --primario-hover: #0f766e;
+            --fuente-familia: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --line-height: 1.6;
+            --letter-spacing: normal;
+            --word-spacing: normal;
+        }
+
+        /* Clase alternativa para Dislexia / Pautas COGA */
+        .modo-accesible {
+            --bg-principal: #fbf6ef; /* Fondo suave, evita blanco puro (Criterio W3C) */
+            --bg-tarjeta: #fdfbf7;
+            --texto-color: #22252a; /* Evita negro puro para reducir deslumbramiento */
+            --fuente-familia: 'Comic Sans MS', 'Verdana', sans-serif; /* Simulación de fuente de lectura fácil */
+            --line-height: 1.9;
+            --letter-spacing: 0.12em; /* Justifica criterio 1.4.12 de espaciado */
+            --word-spacing: 0.18em;
+        }
+
+        /* --- ESTILOS GENERALES --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s, letter-spacing 0.3s, word-spacing 0.3s;
+        }
+
+        body {
+            font-family: var(--fuente-familia);
+            background-color: var(--bg-principal);
+            color: var(--texto-color);
+            line-height: var(--line-height);
+            letter-spacing: var(--letter-spacing);
+            word-spacing: var(--word-spacing);
+            padding-bottom: 60px;
+        }
+
+        header {
+            background-color: #111827;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            color: #2dd4bf;
+        }
+
+        /* --- BARRA DE CONFIGURACIÓN DE ACCESIBILIDAD (Módulo UI/UX) --- */
+        .accesibilidad-toolbar {
+            background-color: #1f2937;
+            padding: 0.75rem 2rem;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+            border-bottom: 4px solid #0d9488;
+        }
+
+        .toolbar-grupo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #f3f4f6;
+            font-size: 0.9rem;
+        }
+
+        .btn-herramienta {
+            background-color: #374151;
+            color: white;
+            border: 1px solid #4b5563;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .btn-herramienta:hover, .btn-herramienta.activo {
+            background-color: #0d9488;
+            border-color: #2dd4bf;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        .contenido {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Buscador por voz simulado */
+        .buscador-contenedor {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .input-busqueda {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .btn-voz {
+            background-color: #ea580c;
+            color: white;
+            border: none;
+            padding: 0 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: bold;
+        }
+
+        .btn-voz:hover {
+            background-color: #c2410c;
+        }
+
+        /* Tarjeta de Destino Turístico (Formato Lectura Fácil) */
+        .tarjeta-destino {
+            background-color: var(--bg-tarjeta);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .tarjeta-imagen {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #0d9488, #0f766e);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .tarjeta-imagen h2 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+        }
+
+        .tarjeta-cuerpo {
+            padding: 2rem;
+        }
+
+        /* Controles Multimedia Integrados */
+        .asistencia-audio-box {
+            background-color: #f1f5f9;
+            border-left: 5px solid #0d9488;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        body.modo-accesible .asistencia-audio-box {
+            background-color: #eaddcd;
+        }
+
+        .ia-badge {
+            background-color: #0d9488;
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Estilos de texto simplificados mediante viñetas */
+        .texto-simplificado {
+            font-size: 1.1rem;
+        }
+
+        .texto-simplificado ul {
+            list-style-type: square;
+            margin-left: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .texto-simplificado li {
+            margin-bottom: 0.75rem;
+        }
+
+        /* Adaptabilidad de tamaño de fuente mediante JS */
+        .fuente-grande {
+            font-size: 1.3rem !important;
+        }
+        .fuente-grande .texto-simplificado {
+            font-size: 1.4rem !important;
+        }
+
+        /* --- RESPONSIVO TOTAL (Desde 320px como exige el informe) --- */
+        @media (max-width: 600px) {
+            header, .accesibilidad-toolbar, .asistencia-audio-box {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .toolbar-grupo {
+                justify-content: space-between;
+            }
+            .tarjeta-imagen h2 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <h1>AndesAccesible</h1>
+        </div>
+        <div style="font-size: 0.85rem; text-align: right; color: #9ca3af;">
+            Prototipo COGA / Arequipa 2026
+        </div>
+    </header>
+
+    <div class="accesibilidad-toolbar" aria-label="Herramientas de accesibilidad">
+        <div class="toolbar-grupo">
+            <span>Configuración visual:</span>
+            <button class="btn-herramienta" id="btn-modo-dislexia" onclick="toggleModoAccesible()">
+                Modo Adaptativo (Pausado y Claro)
+            </button>
+        </div>
+        
+        <div class="toolbar-grupo">
+            <span>Tamaño de Letra:</span>
+            <button class="btn-herramienta" onclick="cambiarTamano(false)">A-</button>
+            <button class="btn-herramienta" onclick="cambiarTamano(true)">A+</button>
+        </div>
+
+        <div class="toolbar-grupo">
+            <span>Espaciado Interactivo:</span>
+            <button class="btn-herramienta" id="btn-espacio" onclick="toggleEspaciado()">
+                Alternar Separación
+            </button>
+        </div>
+    </div>
+
+    <main class="contenido">
+
+        <div class="buscador-contenedor">
+            <input type="text" id="buscador-input" class="input-busqueda" placeholder="Busca destinos en Arequipa... (Ej. Cañón del Colca)">
+            <button class="btn-voz" onclick="activarDictadoVoz()" id="btn-microfono">
+                🎤 Dictar
+            </button>
+        </div>
+
+        <article class="tarjeta-destino">
+            <div class="tarjeta-imagen">
+                <h2>Cañón del Colca</h2>
+                <p>Chivay - Caylloma - Arequipa</p>
+            </div>
+            
+            <div class="tarjeta-cuerpo">
+                <div class="asistencia-audio-box">
+                    <div>
+                        <strong>Asistente de Voz Activo</strong>
+                        <p style="font-size: 0.85rem; color: #4b5563;">Escucha la guía turística sin leer.</p>
+                    </div>
+                    <div>
+                        <button class="btn-herramienta" style="background-color: #0d9488;" onclick="reproducirTexto()">
+                            ▶️ Escuchar Guía
+                        </button>
+                        <button class="btn-herramienta" style="background-color: #b91c1c;" onclick="detenerTexto()">
+                            ⏹️ Parar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="texto-simplificado" id="texto-turistico">
+                    <span class="ia-badge">Resumen Simple por IA</span>
+                    <p><strong>Información clave para tu viaje:</strong></p>
+                    <ul>
+                        <li>Es uno de los cañones más profundos de todo el mundo.</li>
+                        <li>El mirador principal se llama <strong>Cruz del Cóndor</strong>.</li>
+                        <li>Desde allí puedes ver el vuelo de los cóndores gigantes de cerca.</li>
+                        <li>Se encuentra a una distancia de 3 a 4 horas en auto desde la ciudad de Arequipa.</li>
+                        <li>Es un lugar perfecto para caminar (trekking) y visitar baños termales medicinales.</li>
+                    </ul>
+                </div>
+            </div>
+        </article>
+
+    </main>
+
+    <script>
+        // 1. Persistencia y cambio de modo visual adaptativo (Evita contrastes puros)
+        function toggleModoAccesible() {
+            const body = document.body;
+            const boton = document.getElementById('btn-modo-dislexia');
+            body.classList.toggle('modo-accesible');
+            
+            if(body.classList.contains('modo-accesible')) {
+                boton.classList.add('activo');
+                localStorage.setItem('preferencia-accesible', 'activo');
+            } else {
+                boton.classList.remove('activo');
+                localStorage.setItem('preferencia-accesible', 'inactivo');
+            }
+        }
+
+        // 2. Control de Tamaño de Fuente
+        function cambiarTamano(aumentar) {
+            const contenedor = document.getElementById('texto-turistico');
+            if (aumentar) {
+                contenedor.classList.add('fuente-grande');
+            } else {
+                contenedor.classList.remove('fuente-grande');
+            }
+        }
+
+        // 3. Control de Espaciado Adicional (Criterio W3C 1.4.12)
+        function toggleEspaciado() {
+            const body = document.body;
+            const boton = document.getElementById('btn-espacio');
+            
+            if(body.style.letterSpacing === '0.15em') {
+                body.style.letterSpacing = 'normal';
+                body.style.wordSpacing = 'normal';
+                boton.classList.remove('activo');
+            } else {
+                body.style.letterSpacing = '0.15em';
+                body.style.wordSpacing = '0.22em';
+                boton.classList.add('activo');
+            }
+        }
+
+        // 4. Módulo de Asistencia de Lectura (Conversión de Texto a Voz - TTS Real en Navegador)
+        function reproducirTexto() {
+            // Detener lecturas previas en cola
+            window.speechSynthesis.cancel();
+            
+            // Extraer texto plano libre de etiquetas HTML
+            const textoParaLeer = document.getElementById('texto-turistico').innerText.replace("Resumen Simple por IA", "");
+            
+            const lectura = new SpeechSynthesisUtterance(textoParaLeer);
+            lectura.lang = 'es-PE'; // Español enfocado en Perú
+            lectura.rate = 0.85;    // Ritmo pausado e ideal para evitar fatiga cognitiva según el informe
+
+            window.speechSynthesis.speak(lectura);
+        }
+
+        function detenerTexto() {
+            window.speechSynthesis.cancel();
+        }
+
+        // 5. Búsqueda por Voz (Speech-to-Text - Mapeo Técnico Nativo < 1.5s)
+        function activarDictadoVoz() {
+            const btnMicro = document.getElementById('btn-microfono');
+            const inputBusqueda = document.getElementById('buscador-input');
+            
+            // Verificar disponibilidad técnica en el navegador web del usuario
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            
+            if (!SpeechRecognition) {
+                alert("La búsqueda por voz no está soportada en este navegador. Intente con Google Chrome.");
+                return;
+            }
+
+            const reconocimiento = new SpeechRecognition();
+            reconocimiento.lang = 'es-PE';
+            reconocimiento.interimResults = false;
+            reconocimiento.maxAlternatives = 1;
+
+            btnMicro.innerText = "Listening...";
+            btnMicro.style.backgroundColor = "#b91c1c";
+            reconocimiento.start();
+
+            reconocimiento.onresult = function(event) {
+                const resultadoHabla = event.results[0][0].transcript;
+                inputBusqueda.value = resultadoHabla;
+                btnMicro.innerText = "🎤 Dictar";
+                btnMicro.style.backgroundColor = "#ea580c";
+                
+                // Simula latencia técnica optimizada menor a 1.5 segundos descrita en los atributos del producto
+                setTimeout(() => {
+                    alert(`Buscando de forma accesible el destino: "${resultadoHabla}"`);
+                }, 600);
+            };
+
+            reconocimiento.onerror = function() {
+                btnMicro.innerText = "🎤 Dictar";
+                btnMicro.style.backgroundColor = "#ea580c";
+                alert("Hubo un error al procesar el audio, intente de nuevo.");
+            };
+            
+            reconocimiento.onspeechend = function() {
+                reconocimiento.stop();
+            };
+        }
+
+        // Cargar preferencias guardadas al iniciar la página (Persistencia de Preferencias)
+        window.onload = function() {
+            if(localStorage.getItem('preferencia-accesible') === 'activo') {
+                toggleModoAccesible();
+            }
+        }
+    </script>
+</body>
+</html>
